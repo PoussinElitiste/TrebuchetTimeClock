@@ -611,7 +611,7 @@ MonoBehaviour:
   cylinder: {fileID: 0}
   position: {x: 0, y: 0, z: 3}
   size: {x: 0.2, y: 0.2, z: 5}
-  section: 10
+  section: 6
   length: 5
 --- !u!33 &1294331479
 MeshFilter:

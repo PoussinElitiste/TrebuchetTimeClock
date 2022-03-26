@@ -132,7 +132,8 @@ public class MeshGenerator : MonoBehaviour
 
         //MakeTetrahedron(size, position);
         //MakeCube(size, position);
-        MakeCylinder_v2(1, section, length);
+        MakeCylinder_v1(1, section, length);
+        //MakeCylinder_v2(1, section, length);
         //CreateShape();
         UpdateMesh();
     }
@@ -188,43 +189,78 @@ public class MeshGenerator : MonoBehaviour
         };
     }
 
-    // version avec postion centré
-    void MakeCylinder_v1(int radius, int nbSections, int length)
+    // Version avec position centrée
+    // nbSections : angular divisions
+    // lenSegment : distance between each cylinder segment (subdivision)
+    // cylSegments: number of cylinder segment (faces includes)
+    void MakeCylinder_v1(int radius, int nbSections, int lenSegment)
     {
         vertices = new List<Vector3>(nbSections);
         triangles = new List<int>();
 
         // vertices
-        int segment = 2;
+        int cylSegments = 2;
         float angleSection = Mathf.PI * 2 / nbSections;
-        for (int i = 0;i < segment; ++i)
+        for (int i = 0;i < cylSegments; ++i)
         {
-            var offset = i * (nbSections);
+            var offset = i * lenSegment;
             vertices.Add(new Vector3(0f,0f,offset)); 
             for (int j = 0; j < nbSections; ++j)
             {
                 float angle = j * angleSection;
                 float x = Mathf.Sin(angle) * radius;
                 float y = Mathf.Cos(angle) * radius;
-                vertices.Add(new Vector3(x, y, i * length));
+                vertices.Add(new Vector3(x, y, offset));
             }
         }
 
-        // triangle
-        for (int i = 0; i < segment ; ++i)
+        var segmentloop = vertices.Count / cylSegments;
+        // triangles draw face directions
+        for (int i = 0; i < cylSegments ; ++i)
         {
-            var loop = vertices.Count / segment;
             var offset = i * (nbSections + 1);
-            for (int j = 0; j <= loop-2; ++j) 
+            if (i == 0)
             {
-                triangles.Add(offset + 0 );
-                triangles.Add(offset + j + 1);
-                if (j < loop-2)
-                    triangles.Add(offset + j + 2);
-                else
-                    triangles.Add(offset + 1);
+                for (int j = 0; j <= segmentloop - 2; ++j)
+                {
+                    triangles.Add(offset + 0);
+                    triangles.Add(offset + j + 1);
+                    triangles.Add((j < segmentloop - 2) ? offset + j + 2 : offset + 1);
+                }
+            }
+            else if (i == cylSegments - 1)
+            {
+                for (int j = segmentloop; j >= 2; --j)
+                {
+                    triangles.Add(offset + 0);
+                    triangles.Add(offset + j - 1);
+                    triangles.Add((j > 2) ? offset + j - 2 : offset + segmentloop -1);
+                }
             }
         }
+
+        // Draw Quad between faces (only pair value)
+        //if ((vertices.Count % 2 == 0) && (segmentloop == nbSections))
+        //{
+        //    for (int i = 0; i < segmentloop; ++i)
+        //    {
+        //        int noCenterPos = i + 1;
+        //        // generate temporary quad coordinates between vertices faces
+        //        List<int> quadIndex = new()
+        //        {
+        //            noCenterPos,
+        //            segmentloop + noCenterPos,
+        //            (segmentloop + noCenterPos + 1 == vertices.Count) ? segmentloop : segmentloop + noCenterPos + 1,
+        //            (noCenterPos + 1 == segmentloop) ? 0 : i + 1
+        //        };
+
+        //        DrawQuadTriangles(quadIndex);
+        //    }
+        //}
+        //else
+        //{
+        //    // TODO: pyramidal case (like tetrahedron)
+        //}
     }
 
     // nbSections : angular divisions
@@ -287,24 +323,29 @@ public class MeshGenerator : MonoBehaviour
                     i,
                     segmentloop + i,
                     (segmentloop + i + 1 == vertices.Count) ? segmentloop : segmentloop + i + 1,
-                    (i+1 == segmentloop)? 0: i+1
+                    (i + 1 == segmentloop) ? 0 : i + 1
                 };
 
-                // Apply generic quad draw face directions
-                // Quad 1 -> {0,1,2}
-                triangles.Add(quadIndex[0]);
-                triangles.Add(quadIndex[1]);
-                triangles.Add(quadIndex[2]);
-                // Quad 2 -> {0,2,3}
-                triangles.Add(quadIndex[0]);
-                triangles.Add(quadIndex[2]);
-                triangles.Add(quadIndex[3]);
+                DrawQuadTriangles(quadIndex);
             }
         }
         else
         {
             // TODO: pyramidal case (like tetrahedron)
         }
+    }
+
+    private void DrawQuadTriangles(List<int> quadIndex)
+    {
+        // Apply generic quad draw face directions
+        // Quad 1 -> {0,1,2}
+        triangles.Add(quadIndex[0]);
+        triangles.Add(quadIndex[1]);
+        triangles.Add(quadIndex[2]);
+        // Quad 2 -> {0,2,3}
+        triangles.Add(quadIndex[0]);
+        triangles.Add(quadIndex[2]);
+        triangles.Add(quadIndex[3]);
     }
 
     private void UpdateMesh()
