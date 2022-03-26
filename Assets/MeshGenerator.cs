@@ -51,7 +51,8 @@ namespace Game.Data
 
     public static class TetraMeshData
     {
-        public static Vector3[] vertices =
+        // v1 
+        public static Vector3[] vertices_v2 =
         {
             // face Z positive
             new Vector3( 0, 0, 0), // 0
@@ -60,13 +61,36 @@ namespace Game.Data
             new Vector3( 1, 0, 0), // x
         };
 
-        public static int[] faceTriangles =
+        public static int[] faceTriangles_v2 =
         {
-            // parcours en sens horlogique
+            // parcours en sens horlogique -> face caméra
             0, 1, 2, // 0: Face 0-Z-Y
             0, 2, 3, // 1: Face 0-Y-X
-            0, 3, 1, // 2: Face 0-X-Z
-            3, 2, 1  // 3: Face X-Y-Z
+
+            // parcours en sens anti-horlogique -> dos caméra
+            3, 2, 1, // 3: Face X-Y-Z
+            3, 1, 0 // 2: Face 0-X-Z
+        };
+
+        // v2: normalisé avec le parcour d'un cylindre 
+        public static Vector3[] vertices =
+        {   
+            // face Z positive
+            new Vector3( 0, 0, 0), // 0: origine
+            new Vector3( 0, 1, 0), // 1: y
+            new Vector3( 1, 0, 0), // 2: x
+            new Vector3( 0, 0, 1)  // 3: z
+        };
+
+        public static int[] faceTriangles =
+        {
+            // parcours en sens horlogique -> face caméra
+            0, 1, 2, // 0: Face 0-Y-X = base pyramide
+            3, 2, 1, // 1: Face Z-X-Y
+
+            // parcours en sens anti-horlogique -> dos caméra
+            3, 1, 0, // 2: Face Z-Y-0
+            3, 0, 2  // 3: Face Z-0-X
         };
 
         public static Vector3[] faceVertices(Vector3 size, Vector3 pos)
@@ -109,8 +133,8 @@ public class MeshGenerator : MonoBehaviour
         mesh = GetComponent<MeshFilter>().mesh;
 
         //MakeCube(size, position);
-        MakeCylinder(1, iter, leng);
-        //MakeTetrahedron(size, position);
+        //MakeCylinder(1, iter, leng);
+        MakeTetrahedron(size, position);
         //CreateShape();
         UpdateMesh();
     }
@@ -177,7 +201,7 @@ public class MeshGenerator : MonoBehaviour
         for (int i = 0;i < segment; ++i)
         {
             var offset = i * (nbSections);
-            vertices.Add(new Vector3(0f,0f,offset));
+            //vertices.Add(new Vector3(0f,0f,offset)); // version centré
             for (int j = 0; j < nbSections; ++j)
             {
                 float angle = j * angleSection;
