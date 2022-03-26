@@ -1,0 +1,13 @@
+﻿Temp
+UserSettings
+*.sln
+*.csproj
+*.pdb
+*.pdb.*
+*.obj
+*.obj.*
+*.vsconfig
+obj
+Logs
+Library
+.vs
