@@ -240,27 +240,27 @@ public class MeshGenerator : MonoBehaviour
         }
 
         // Draw Quad between faces (only pair value)
-        //if ((vertices.Count % 2 == 0) && (segmentloop == nbSections))
-        //{
-        //    for (int i = 0; i < segmentloop; ++i)
-        //    {
-        //        int noCenterPos = i + 1;
-        //        // generate temporary quad coordinates between vertices faces
-        //        List<int> quadIndex = new()
-        //        {
-        //            noCenterPos,
-        //            segmentloop + noCenterPos,
-        //            (segmentloop + noCenterPos + 1 == vertices.Count) ? segmentloop : segmentloop + noCenterPos + 1,
-        //            (noCenterPos + 1 == segmentloop) ? 0 : i + 1
-        //        };
+        if ((vertices.Count % 2 == 0) && (segmentloop == nbSections + 1))
+        {
+            for (int i = 0; i < nbSections; ++i)
+            {
+                int noCenterPos = i + 1;
+                // generate temporary quad coordinates between vertices faces
+                List<int> quadIndex = new()
+                {
+                    noCenterPos,
+                    segmentloop + noCenterPos,
+                    (segmentloop + noCenterPos + 1 == vertices.Count) ? segmentloop + 1 : segmentloop + noCenterPos + 1,
+                    (noCenterPos + 1 == segmentloop) ? 1 : noCenterPos + 1
+                };
 
-        //        DrawQuadTriangles(quadIndex);
-        //    }
-        //}
-        //else
-        //{
-        //    // TODO: pyramidal case (like tetrahedron)
-        //}
+                DrawQuadTriangles(quadIndex);
+            }
+        }
+        else
+        {
+            // TODO: pyramidal case (like tetrahedron)
+        }
     }
 
     // nbSections : angular divisions
