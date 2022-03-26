@@ -92,14 +92,24 @@ public class MeshGenerator : MonoBehaviour
     List<Vector3> vertices;
     List<int> triangles;
 
+    public GameObject cylinder;
+
     public Vector3 position;
     public Vector3 size = new Vector3(1f,1f,1f);
+
+    // cylinder
+    [Range(3, 10)]
+    public int iter = 3;
+    int num = 0;
+    public int leng = 5;
+
 
     void Start()
     {
         mesh = GetComponent<MeshFilter>().mesh;
 
-        MakeCube(size, position);
+        //MakeCube(size, position);
+        MakeCylinder(1, iter, leng);
         //MakeTetrahedron(size, position);
         //CreateShape();
         UpdateMesh();
@@ -134,7 +144,6 @@ public class MeshGenerator : MonoBehaviour
         vertices = new List<Vector3>();
         triangles = new List<int>();
         vertices.AddRange(TetraMeshData.faceVertices(size, pos));
-        //vertices.AddRange(TetraMeshData.vertices);
         triangles.AddRange(TetraMeshData.faceTriangles);
     }
 
@@ -155,6 +164,44 @@ public class MeshGenerator : MonoBehaviour
             0, 3, 1, // 0-X-Z
             3, 2, 1  // X-Y-Z
         };
+    }
+
+    void MakeCylinder(int radius, int nbSections, int length)
+    {
+        vertices = new List<Vector3>(nbSections);
+        triangles = new List<int>();
+
+        // vertices
+        int segment = 2;
+        float angleSection = Mathf.PI * 2 / nbSections;
+        for (int i = 0;i < segment; ++i)
+        {
+            var offset = i * (nbSections);
+            vertices.Add(new Vector3(0f,0f,offset));
+            for (int j = 0; j < nbSections; ++j)
+            {
+                float angle = j * angleSection;
+                float x = Mathf.Sin(angle) * radius;
+                float y = Mathf.Cos(angle) * radius;
+                vertices.Add(new Vector3(x, y, i * length));
+            }
+        }
+
+        // triangle
+        for (int i = 0; i < segment ; ++i)
+        {
+            var loop = vertices.Count / segment;
+            var offset = i * (nbSections + 1);
+            for (int j = 0; j <= loop-2; ++j) 
+            {
+                triangles.Add(offset + 0 );
+                triangles.Add(offset + j + 1);
+                if (j < loop-2)
+                    triangles.Add(offset + j + 2);
+                else
+                    triangles.Add(offset + 1);
+            }
+        }
     }
 
     private void UpdateMesh()
