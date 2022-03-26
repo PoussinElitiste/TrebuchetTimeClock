@@ -510,10 +510,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1bc987b25e132b49a278eaa161cebbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scale: 1
-  posX: 0
-  posY: 0
-  posZ: 0
+  position: {x: 0, y: 0, z: 3}
+  size: {x: 0.2, y: 0.2, z: 5}
 --- !u!33 &1294331479
 MeshFilter:
   m_ObjectHideFlags: 0
