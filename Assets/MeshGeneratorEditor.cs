@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using Game.Run;
 using UnityEditor;
 using UnityEngine;
 
@@ -79,7 +80,7 @@ namespace Game.Inspector
 
             path = FileUtil.GetProjectRelativePath(path);
 
-            Mesh meshToSave = (makeNewInstance) ? Object.Instantiate(mesh) as Mesh : mesh;
+            Mesh meshToSave = (makeNewInstance) ? Instantiate(mesh) : mesh;
 
             AssetDatabase.CreateAsset(meshToSave, path);
             AssetDatabase.SaveAssets();
