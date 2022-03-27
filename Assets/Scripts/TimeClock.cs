@@ -7,7 +7,6 @@ namespace Game.Run
 {
     public class TimeClock : MonoBehaviour
     {
-        private const float REAL_SECOND_PER_INGAME_DAY = 60f;
         [SerializeField]
         private Transform minuteHand;
         [SerializeField]
