@@ -72,7 +72,7 @@ namespace Game.Data
             3, 1, 0 // 2: Face 0-X-Z
         };
 
-        // v2: normalisé avec le parcour d'un cylindre 
+        // v2: normalisé avec le parcour d'un cylindre non centré
         public static Vector3[] vertices =
         {   
             // face Z positive
@@ -93,7 +93,7 @@ namespace Game.Data
             3, 0, 2  // 3: Face Z-0-X
         };
 
-        public static Vector3[] faceVertices(Vector3 size, Vector3 pos)
+        public static Vector3[] FaceVertices(Vector3 size, Vector3 pos)
         {
             Vector3[] fv = new Vector3[vertices.Length];
             for (int i = 0; i < fv.Length; ++i)
@@ -112,33 +112,39 @@ namespace Game.Data
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class MeshGenerator : MonoBehaviour
 {
-    Mesh mesh;
-    List<Vector3> vertices;
-    List<int> triangles;
+    private Mesh mesh;
+    private List<Vector3> vertices;
+    private List<int> triangles;
 
-    public GameObject cylinder;
-
-    public Vector3 position;
-    public Vector3 size = new (1f,1f,1f);
+    [SerializeField]
+    private Vector3 position;
+    [SerializeField]
+    private Vector3 size = new(1f, 1f, 1f);
 
     // cylinder
     [Range(3, 10)]
-    public int section = 3;
-    public int length = 5;
+    [SerializeField]
+    private int section = 3;
+    [SerializeField]
+    private int radius = 1;
+    [SerializeField]
+    private int length = 5;
+
+    public Mesh GeneratedMesh { get { return mesh; } }
 
     void Start()
     {
-        mesh = GetComponent<MeshFilter>().mesh;
+        mesh = GetComponent<MeshFilter>().sharedMesh;
 
         //MakeTetrahedron(size, position);
         //MakeCube(size, position);
-        MakeCylinder_v1(1, section, length);
+        MakeCylinder_v1(radius, section, length);
         //MakeCylinder_v2(1, section, length);
         //CreateShape();
         UpdateMesh();
     }
 
-    void MakeCube(Vector3 size, Vector3 pos)
+    private void MakeCube(Vector3 size, Vector3 pos)
     {
         vertices = new List<Vector3>();
         triangles = new List<int>();
@@ -148,7 +154,7 @@ public class MeshGenerator : MonoBehaviour
         }
     }
 
-    void MakeQuadFace(int dir, Vector3 size, Vector3 pos)
+    private void MakeQuadFace(int dir, Vector3 size, Vector3 pos)
     {
         vertices.AddRange(CubeMeshData.faceVertices(dir, size, pos));
         int vCount = vertices.Count;
@@ -162,11 +168,11 @@ public class MeshGenerator : MonoBehaviour
         triangles.Add(vCount - 4 + 3);
     }
 
-    void MakeTetrahedron(Vector3 size, Vector3 pos)
+    private void MakeTetrahedron(Vector3 size, Vector3 pos)
     {
         vertices = new List<Vector3>();
         triangles = new List<int>();
-        vertices.AddRange(TetraMeshData.faceVertices(size, pos));
+        vertices.AddRange(TetraMeshData.FaceVertices(size, pos));
         triangles.AddRange(TetraMeshData.faceTriangles);
     }
 
@@ -193,7 +199,7 @@ public class MeshGenerator : MonoBehaviour
     // nbSections : angular divisions
     // lenSegment : distance between each cylinder segment (subdivision)
     // cylSegments: number of cylinder segment (faces includes)
-    void MakeCylinder_v1(int radius, int nbSections, int lenSegment)
+    private void MakeCylinder_v1(int radius, int nbSections, int lenSegment)
     {
         vertices = new List<Vector3>(nbSections);
         triangles = new List<int>();
@@ -201,10 +207,10 @@ public class MeshGenerator : MonoBehaviour
         // vertices
         int cylSegments = 2;
         float angleSection = Mathf.PI * 2 / nbSections;
-        for (int i = 0;i < cylSegments; ++i)
+        for (int i = 0; i < cylSegments; ++i)
         {
             var offset = i * lenSegment;
-            vertices.Add(new Vector3(0f,0f,offset)); 
+            vertices.Add(new Vector3(0f, 0f, offset));
             for (int j = 0; j < nbSections; ++j)
             {
                 float angle = j * angleSection;
@@ -216,7 +222,7 @@ public class MeshGenerator : MonoBehaviour
 
         var segmentloop = vertices.Count / cylSegments;
         // triangles draw face directions
-        for (int i = 0; i < cylSegments ; ++i)
+        for (int i = 0; i < cylSegments; ++i)
         {
             var offset = i * (nbSections + 1);
             if (i == 0)
@@ -234,7 +240,7 @@ public class MeshGenerator : MonoBehaviour
                 {
                     triangles.Add(offset + 0);
                     triangles.Add(offset + j - 1);
-                    triangles.Add((j > 2) ? offset + j - 2 : offset + segmentloop -1);
+                    triangles.Add((j > 2) ? offset + j - 2 : offset + segmentloop - 1);
                 }
             }
         }
@@ -266,13 +272,13 @@ public class MeshGenerator : MonoBehaviour
     // nbSections : angular divisions
     // lenSegment : distance between each cylinder segment (subdivision)
     // cylSegments: number of cylinder segment (faces includes)
-    void MakeCylinder_v2(int radius, int nbSections, int lenSegment)
+    private void MakeCylinder_v2(int radius, int nbSections, int lenSegment)
     {
         vertices = new List<Vector3>(nbSections);
         triangles = new List<int>();
 
         // vertices positions
-        int cylSegments = 2; 
+        int cylSegments = 2;
         float angleSection = Mathf.PI * 2 / nbSections;
         for (int i = 0; i < cylSegments; ++i)
         {
@@ -291,7 +297,7 @@ public class MeshGenerator : MonoBehaviour
         {
             var offset = i * segmentloop;
             // draw front camera face -> clockwork positive
-            if (i == 0) 
+            if (i == 0)
             {
                 for (int j = 0; j < segmentloop - 2; ++j)
                 {
@@ -301,7 +307,7 @@ public class MeshGenerator : MonoBehaviour
                 }
             }
             // draw back camera face -> clockwork negative
-            else if (i == cylSegments-1) 
+            else if (i == cylSegments - 1)
             {
                 for (int j = segmentloop; j > 2; --j)
                 {
@@ -350,9 +356,30 @@ public class MeshGenerator : MonoBehaviour
 
     private void UpdateMesh()
     {
+        if (mesh == null)
+            mesh = GetComponent<MeshFilter>().mesh;
         mesh.Clear();
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
         mesh.RecalculateNormals();
+    }
+
+    public bool GenerateTetrahedron()
+    {
+        if (mesh == null)
+            mesh = GetComponent<MeshFilter>().sharedMesh;
+        MakeTetrahedron(size, position);
+        UpdateMesh();
+
+        return true;
+    }
+
+    internal bool ClearModel()
+    {
+        if (mesh == null)
+            mesh = GetComponent<MeshFilter>().sharedMesh;
+        mesh.Clear();
+
+        return true;
     }
 }
