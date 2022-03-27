@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 namespace Game.Run
@@ -24,6 +25,9 @@ namespace Game.Run
         private PlayerInput playerInput;
         private InputAction m_switchAction;
 
+        [SerializeField]
+        public UnityEvent onSwitchModel;
+
         private void Start()
         {
             var clockInstance = Instantiate(clockworkPrefab);
@@ -40,6 +44,7 @@ namespace Game.Run
             m_switchAction.performed += context =>
             {
                 clockwork.SwitchModel();
+                onSwitchModel?.Invoke();
             };
         }
 
