@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Game.Run
 {
@@ -19,6 +20,10 @@ namespace Game.Run
         [SerializeField]
         private float hourAngle;
 
+        [SerializeField]
+        private PlayerInput playerInput;
+        private InputAction m_switchAction;
+
         private void Start()
         {
             var clockInstance = Instantiate(clockworkPrefab);
@@ -30,6 +35,12 @@ namespace Game.Run
             var syncStart = (MILLISEC - DateTime.Now.Millisecond) / MILLISEC;
             Debug.Log("start sync : " + syncStart.ToString() + "s");
             InvokeRepeating(nameof(SetCurrentTime), syncStart, 1f);
+
+            m_switchAction = playerInput.currentActionMap["Switch"];
+            m_switchAction.performed += context =>
+            {
+                clockwork.SwitchModel();
+            };
         }
 
         private void SetCurrentTime()

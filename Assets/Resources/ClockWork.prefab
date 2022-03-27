@@ -83,7 +83,7 @@ MonoBehaviour:
   minuteHand: {fileID: 7143995272342060963}
   hourHand: {fileID: 7143995273624204451}
   timeText: {fileID: 7143995273769182670}
-  defaultClockModel: 0
+  currentClockModel: 0
   clockHandModels:
   - minute: {fileID: 4300000, guid: d717198b8876a8046b13c022c46a83e2, type: 2}
     hour: {fileID: 4300000, guid: d8a6e5fb0d77f304482371ef5829e668, type: 2}
@@ -91,8 +91,8 @@ MonoBehaviour:
     hour: {fileID: 4300000, guid: b926d36328bbd154ba8d709851fdbdce, type: 2}
   - minute: {fileID: 4300000, guid: c51d653e3b58e664a9bbbdff70767f58, type: 2}
     hour: {fileID: 4300000, guid: 82f0b97ac03ee5a41a25d1783ab2a6d2, type: 2}
-  - minute: {fileID: 4300000, guid: fc5c6947b027f04459ac1dd18d8f2fd3, type: 2}
-    hour: {fileID: 4300000, guid: 56316f17c837ac0488123fde13b68a5c, type: 2}
+  - minute: {fileID: 4300000, guid: 56316f17c837ac0488123fde13b68a5c, type: 2}
+    hour: {fileID: 4300000, guid: fc5c6947b027f04459ac1dd18d8f2fd3, type: 2}
 --- !u!1 &7143995273551655743
 GameObject:
   m_ObjectHideFlags: 0

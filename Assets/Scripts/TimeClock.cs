@@ -10,7 +10,9 @@ namespace Game.Run
         Cube = 0,
         Cylinder,
         Tetra,
-        Triangle
+        Triangle,
+
+        Count
     }
 
     public class TimeClock : MonoBehaviour
@@ -34,17 +36,22 @@ namespace Game.Run
         private TextMeshPro timeText;
 
         [SerializeField]
-        private HandleType defaultClockModel = HandleType.Cube;
+        private HandleType currentClockModel = HandleType.Cube;
         [SerializeField]
-        private List<ClockHandModel> clockHandModels = new ();
+        private List<ClockHandModel> clockHandModels = new();
 
         private void Start()
         {
             minuteHandMesh = minuteHand.GetComponentInChildren<MeshFilter>();
             hourHandMesh = hourHand.GetComponentInChildren<MeshFilter>();
 
-            minuteHandMesh.sharedMesh = clockHandModels[(int)defaultClockModel].minute;
-            hourHandMesh.sharedMesh = clockHandModels[(int)defaultClockModel].hour;
+            SetHandModels((int)currentClockModel);
+        }
+
+        private void SetHandModels(int modelIndex)
+        {
+            minuteHandMesh.sharedMesh = clockHandModels[modelIndex].minute;
+            hourHandMesh.sharedMesh = clockHandModels[modelIndex].hour;
         }
 
         public void SetCurrentTime(int minuteAngle, float hourAngle, string display)
@@ -53,6 +60,14 @@ namespace Game.Run
             hourHand.eulerAngles = new Vector3(0, 0, -hourAngle);
 
             timeText.text = display;
+        }
+
+        public void SwitchModel()
+        {
+            currentClockModel++;
+            currentClockModel= (HandleType)((int)currentClockModel % (int)HandleType.Count);
+
+            SetHandModels((int)currentClockModel);
         }
     }
 }
