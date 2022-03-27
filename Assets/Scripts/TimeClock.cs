@@ -1,6 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+
 using TMPro;
 using UnityEngine;
 
@@ -17,29 +16,30 @@ namespace Game.Run
         [SerializeField]
         private TextMeshPro timeText;
 
-        private float day;
+        private const float MIN_TO_ANGLE = 360f / 60f;
+        private const float HOUR_TO_ANGLE = 360f / 24f * 2f; //affichage sur 12h
+        private const float MIN_TO_HOUR_ANGLE = MIN_TO_ANGLE / 12f; // interval minutes pour 1heure 
 
+        [SerializeField]
+        private int minuteAngle;
+        [SerializeField]
+        private float hourAngle;
 
         private void Start()
         {
-            DateTime dt = DateTime.Now;
-            Debug.Log(dt.ToString("G"));
+            InvokeRepeating(nameof(SetCurrentTime), 0f, 1f);
         }
 
-        // Update is called once per frame
-        void Update()
+        private void SetCurrentTime()
         {
             DateTime dt = DateTime.Now;
+            
+            minuteAngle = Mathf.RoundToInt(dt.Minute * MIN_TO_ANGLE);
+            hourAngle = Mathf.Round((dt.Hour * HOUR_TO_ANGLE) + (dt.Minute * MIN_TO_HOUR_ANGLE));
+            minuteHand.eulerAngles = new Vector3(0, 0, -minuteAngle);
+            hourHand.eulerAngles = new Vector3(0, 0, -hourAngle);
 
-            day += Time.deltaTime / REAL_SECOND_PER_INGAME_DAY;
-            float dayNormalized = day % 1f;
-            float rotationDegreesperDay = 360f;
-            hourHand.eulerAngles = new Vector3(0, 0, -dayNormalized * rotationDegreesperDay);
-
-            float hoursPerDay = 24f;
-            minuteHand.eulerAngles = new Vector3(0, 0, -dayNormalized * rotationDegreesperDay * hoursPerDay);
-
-            timeText.text = dt.Minute.ToString("00") + ":"+ dt.Hour.ToString("00") + ":" + dt.Second.ToString("00");
+            timeText.text = dt.ToString("HH:mm:ss");
         }
     }
 }
