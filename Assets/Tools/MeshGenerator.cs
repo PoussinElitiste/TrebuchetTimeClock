@@ -136,7 +136,7 @@ namespace Game.Run
 
         void Start()
         {
-            mesh = GetComponent<MeshFilter>().sharedMesh;
+            mesh = GetComponent<MeshFilter>().mesh;
 
             //MakeTetrahedron(size, position);
             //MakeCube(size, position);
@@ -358,8 +358,6 @@ namespace Game.Run
 
         private void UpdateMesh()
         {
-            if (mesh == null)
-                mesh = GetComponent<MeshFilter>().sharedMesh;
             mesh.Clear();
             mesh.vertices = vertices.ToArray();
             mesh.triangles = triangles.ToArray();
@@ -368,39 +366,50 @@ namespace Game.Run
 
         public bool GenerateTetrahedron()
         {
+            var meshFilter = GetComponent<MeshFilter>();
+            mesh = meshFilter.sharedMesh;
             if (mesh == null)
-                mesh = GetComponent<MeshFilter>().sharedMesh;
+                mesh = new Mesh { name = gameObject.name };
+
             MakeTetrahedron(size, position);
             UpdateMesh();
 
+            meshFilter.sharedMesh = mesh;
             return true;
         }
 
         public bool GenerateCube()
         {
+            var meshFilter = GetComponent<MeshFilter>();
+            mesh = meshFilter.sharedMesh;
             if (mesh == null)
-                mesh = GetComponent<MeshFilter>().sharedMesh;
+                mesh = new Mesh { name = gameObject.name };
+
             MakeCube(size, position);
             UpdateMesh();
 
+            meshFilter.sharedMesh = mesh;
             return true;
         }
 
         public bool GenerateCylinder()
         {
+            var meshFilter = GetComponent<MeshFilter>();
+            mesh = meshFilter.sharedMesh;
             if (mesh == null)
-                mesh = GetComponent<MeshFilter>().sharedMesh;
+                mesh = new Mesh { name = gameObject.name};
+
             MakeCylinder_v2(radius, section, length);
             UpdateMesh();
 
+            meshFilter.sharedMesh = mesh;
             return true;
         }
 
         internal bool ClearModel()
         {
-            if (mesh == null)
-                mesh = GetComponent<MeshFilter>().sharedMesh;
-            mesh.Clear();
+            GetComponent<MeshFilter>().sharedMesh = null;
+            mesh = null;
 
             return true;
         }

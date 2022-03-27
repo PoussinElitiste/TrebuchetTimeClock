@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using Game.Run;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -83,6 +84,7 @@ namespace Game.Inspector
         {
             Mesh m = refScript.GeneratedMesh;
             SaveMesh(m, m.name, false);
+            refScript.ClearModel();
         }
 
         public void SaveMesh(Mesh mesh, string name, bool makeNewInstance)
@@ -91,8 +93,8 @@ namespace Game.Inspector
             if (string.IsNullOrEmpty(path)) return;
 
             path = FileUtil.GetProjectRelativePath(path);
-
-            Mesh meshToSave = (makeNewInstance) ? Instantiate(mesh) : mesh;
+            mesh.name = Path.GetFileNameWithoutExtension(path);
+            Mesh meshToSave = Instantiate(mesh);
 
             AssetDatabase.CreateAsset(meshToSave, path);
             AssetDatabase.SaveAssets();
