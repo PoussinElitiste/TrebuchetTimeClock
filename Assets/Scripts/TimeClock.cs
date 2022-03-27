@@ -16,9 +16,10 @@ namespace Game.Run
         [SerializeField]
         private TextMeshPro timeText;
 
+        private const float MILLISEC = 1000f;
         private const float MIN_TO_ANGLE = 360f / 60f;
         private const float HOUR_TO_ANGLE = 360f / 24f * 2f; //affichage sur 12h
-        private const float MIN_TO_HOUR_ANGLE = MIN_TO_ANGLE / 12f; // interval minutes pour 1heure 
+        private const float MIN_TO_HOUR_ANGLE = MIN_TO_ANGLE / 12f; // minutes pour 1heure 
 
         [SerializeField]
         private int minuteAngle;
@@ -27,7 +28,11 @@ namespace Game.Run
 
         private void Start()
         {
-            InvokeRepeating(nameof(SetCurrentTime), 0f, 1f);
+            SetCurrentTime();
+            // sync to system time update interval
+            var syncStart = (MILLISEC - DateTime.Now.Millisecond)/ MILLISEC;
+            Debug.Log("start sync : " + syncStart.ToString() + "s");
+            InvokeRepeating(nameof(SetCurrentTime), syncStart, 1f);
         }
 
         private void SetCurrentTime()
