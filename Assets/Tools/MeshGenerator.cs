@@ -376,6 +376,26 @@ namespace Game.Run
             return true;
         }
 
+        public bool GenerateCube()
+        {
+            if (mesh == null)
+                mesh = GetComponent<MeshFilter>().sharedMesh;
+            MakeCube(size, position);
+            UpdateMesh();
+
+            return true;
+        }
+
+        public bool GenerateCylinder()
+        {
+            if (mesh == null)
+                mesh = GetComponent<MeshFilter>().sharedMesh;
+            MakeCylinder_v2(radius, section, length);
+            UpdateMesh();
+
+            return true;
+        }
+
         internal bool ClearModel()
         {
             if (mesh == null)

@@ -36,17 +36,29 @@ namespace Game.Inspector
             serializedObject.Update();
             EditorGUILayout.PropertyField(position);
             EditorGUILayout.PropertyField(size);
-
-            EditorGUILayout.PropertyField(section);
-            EditorGUILayout.PropertyField(radius);
-            EditorGUILayout.PropertyField(length);
-
             if (GUILayout.Button("Make Tetrahedron"))
             {
                 if (refScript.GenerateTetrahedron())
-                   SavePrefab();
+                    SavePrefab();
             }
 
+            if (GUILayout.Button("Make Cube"))
+            {
+                if (refScript.GenerateCube())
+                    SavePrefab();
+            }
+
+            EditorGUILayout.Separator();
+            EditorGUILayout.PropertyField(section);
+            EditorGUILayout.PropertyField(radius);
+            EditorGUILayout.PropertyField(length);
+            if (GUILayout.Button("Make Cylinder"))
+            {
+                if (refScript.GenerateCylinder())
+                    SavePrefab();
+            }
+
+            EditorGUILayout.Space();
             if (GUILayout.Button("Clear Model"))
             {
                 if (refScript.ClearModel())
