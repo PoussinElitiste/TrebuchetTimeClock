@@ -11,7 +11,8 @@ namespace Game.Run
         private const float MIN_TO_HOUR_ANGLE = MIN_TO_ANGLE / 12f; // minutes pour 1heure 
 
         [SerializeField]
-        private TimeClock clockWork;
+        private GameObject clockworkPrefab;
+        private TimeClock clockwork;
 
         [SerializeField]
         private int minuteAngle;
@@ -20,6 +21,10 @@ namespace Game.Run
 
         private void Start()
         {
+            var clockInstance = Instantiate(clockworkPrefab);
+            clockInstance.transform.parent = transform;
+            clockwork = clockInstance.GetComponent<TimeClock>();
+
             SetCurrentTime();
             // sync to system time update interval
             var syncStart = (MILLISEC - DateTime.Now.Millisecond) / MILLISEC;
@@ -32,7 +37,7 @@ namespace Game.Run
             DateTime dt = DateTime.Now;
             minuteAngle = Mathf.RoundToInt(dt.Minute * MIN_TO_ANGLE);
             hourAngle = Mathf.Round((dt.Hour * HOUR_TO_ANGLE) + (dt.Minute * MIN_TO_HOUR_ANGLE));
-            clockWork.SetCurrentTime(minuteAngle, hourAngle, dt.ToString("HH:mm:ss"));
+            clockwork.SetCurrentTime(minuteAngle, hourAngle, dt.ToString("HH:mm:ss"));
         }
     }
 }
