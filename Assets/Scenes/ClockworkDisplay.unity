@@ -250,6 +250,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ebbe45342795b9439516a6d5e645307, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  clockWork: {fileID: 1210967787}
+  minuteAngle: 0
+  hourAngle: 0
 --- !u!1 &621420738
 GameObject:
   m_ObjectHideFlags: 0
@@ -831,8 +834,6 @@ MonoBehaviour:
   minuteHand: {fileID: 2048592173}
   hourHand: {fileID: 779026989}
   timeText: {fileID: 621499200}
-  minuteAngle: 0
-  hourAngle: 0
 --- !u!1 &2048592172
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,18 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-public class TimeSystem : MonoBehaviour
+namespace Game.Run
 {
-    // Start is called before the first frame update
-    void Start()
+    public class TimeSystem : MonoBehaviour
     {
-        
-    }
+        private const float MILLISEC = 1000f;
+        private const float MIN_TO_ANGLE = 360f / 60f;
+        private const float HOUR_TO_ANGLE = 360f / 24f * 2f; //affichage sur 12h
+        private const float MIN_TO_HOUR_ANGLE = MIN_TO_ANGLE / 12f; // minutes pour 1heure 
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        [SerializeField]
+        private TimeClock clockWork;
+
+        [SerializeField]
+        private int minuteAngle;
+        [SerializeField]
+        private float hourAngle;
+
+        private void Start()
+        {
+            SetCurrentTime();
+            // sync to system time update interval
+            var syncStart = (MILLISEC - DateTime.Now.Millisecond) / MILLISEC;
+            Debug.Log("start sync : " + syncStart.ToString() + "s");
+            InvokeRepeating(nameof(SetCurrentTime), syncStart, 1f);
+        }
+
+        private void SetCurrentTime()
+        {
+            DateTime dt = DateTime.Now;
+            minuteAngle = Mathf.RoundToInt(dt.Minute * MIN_TO_ANGLE);
+            hourAngle = Mathf.Round((dt.Hour * HOUR_TO_ANGLE) + (dt.Minute * MIN_TO_HOUR_ANGLE));
+            clockWork.SetCurrentTime(minuteAngle, hourAngle, dt.ToString("HH:mm:ss"));
+        }
     }
 }
