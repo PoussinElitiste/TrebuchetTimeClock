@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Game.Run
 {
+    [RequireComponent(typeof(AudioSource))]
     public class SoundSystem : MonoBehaviour
     {
         [SerializeField]
@@ -13,11 +14,6 @@ namespace Game.Run
         [SerializeField]
         [Range(0f, 1f)]
         private float volume = 0.5f;
-
-        private void Start()
-        {
-            player.PlayOneShot(clip, volume);
-        }
 
         public void OnTimeModelSwitch()
         {
