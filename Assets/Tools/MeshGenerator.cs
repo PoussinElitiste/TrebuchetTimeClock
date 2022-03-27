@@ -128,9 +128,9 @@ namespace Game.Run
         [SerializeField]
         private int section = 3;
         [SerializeField]
-        private int radius = 1;
+        private float radius = 1;
         [SerializeField]
-        private int length = 5;
+        private float length = 5;
 
         public Mesh GeneratedMesh { get { return mesh; } }
 
@@ -197,11 +197,11 @@ namespace Game.Run
             };
         }
 
-        // Version avec position centrée
+        // Version avec 1ére position centrée
         // nbSections : angular divisions
         // lenSegment : distance between each cylinder segment (subdivision)
         // cylSegments: number of cylinder segment (faces includes)
-        private void MakeCylinder_v1(int radius, int nbSections, int lenSegment)
+        private void MakeCylinder_v1(float radius, int nbSections, float lenSegment)
         {
             vertices = new List<Vector3>(nbSections);
             triangles = new List<int>();
@@ -274,7 +274,7 @@ namespace Game.Run
         // nbSections : angular divisions
         // lenSegment : distance between each cylinder segment (subdivision)
         // cylSegments: number of cylinder segment (faces includes)
-        private void MakeCylinder_v2(int radius, int nbSections, int lenSegment)
+        private void MakeCylinder_v2(float radius, int nbSections, float lenSegment)
         {
             vertices = new List<Vector3>(nbSections);
             triangles = new List<int>();
@@ -359,7 +359,7 @@ namespace Game.Run
         private void UpdateMesh()
         {
             if (mesh == null)
-                mesh = GetComponent<MeshFilter>().mesh;
+                mesh = GetComponent<MeshFilter>().sharedMesh;
             mesh.Clear();
             mesh.vertices = vertices.ToArray();
             mesh.triangles = triangles.ToArray();
