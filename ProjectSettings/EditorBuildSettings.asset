@@ -4,6 +4,12 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/ClockworkDisplay.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 0
+    path: Assets/Scenes/GeneratorScene.unity
+    guid: a05bfa2fa8bd08b4db7ce85f76096f9e
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 7c878d0c10dec544598b13b619a93a2e, type: 2}
